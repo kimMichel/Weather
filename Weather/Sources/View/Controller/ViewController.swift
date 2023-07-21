@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     var weatherImageView: UIImageView!
     var tempLabel: UILabel!
     
+    var viewModel = WeatherViewModel()
     
     override func loadView() {
         view = UIView()
@@ -23,7 +24,7 @@ class ViewController: UIViewController {
         cityLabel.textAlignment = .center
         cityLabel.font = UIFont.systemFont(ofSize: 24)
         cityLabel.textColor = .white
-        cityLabel.text = "Sao Paulo"
+        cityLabel.text = "---"
         view.addSubview(cityLabel)
         
         weatherImageView = UIImageView()
@@ -36,7 +37,7 @@ class ViewController: UIViewController {
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
         tempLabel.textAlignment = .center
         tempLabel.textColor = .white
-        tempLabel.text = "15°C"
+        tempLabel.text = "---"
         tempLabel.font = UIFont.boldSystemFont(ofSize: 44)
         view.addSubview(tempLabel)
         
@@ -55,8 +56,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadData()
     }
 
+    private func loadData() {
+        viewModel.getWeather { [weak self] weather in
+            DispatchQueue.main.async {
+                self?.cityLabel.text = weather.cityName
+                self?.tempLabel.text = weather.temperatureString
+                self?.weatherImageView.image = UIImage(systemName: weather.conditionName)
+            }
+        }
+    }
 
 }
 
