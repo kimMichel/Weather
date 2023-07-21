@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class WeatherManager {
     
@@ -13,12 +14,9 @@ class WeatherManager {
     let unit = "metric"
     let lang = "pt-br"
     
-    let latitude = -23.5505
-    let longitude = -46.6333
-    
-    func fetchData(completion: @escaping (WeatherModel?, String?) -> Void) {
+    func fetchData(lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (WeatherModel?, String?) -> Void) {
         
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?appid=\(key)&units=\(unit)&lang=\(lang)&lat=\(latitude)&lon=\(longitude)"
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?appid=\(key)&units=\(unit)&lang=\(lang)&lat=\(lat)&lon=\(lon)"
         
         guard let url = URL(string: urlString) else { return }
         
@@ -30,8 +28,9 @@ class WeatherManager {
                     let id = decodedData.weather[0].id
                     let temp = decodedData.main.temp
                     let name = decodedData.name
+                    let description = decodedData.weather[0].description
                     
-                    let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp)
+                    let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp, description: description)
                     
                     completion(weather, nil)
                 } catch {

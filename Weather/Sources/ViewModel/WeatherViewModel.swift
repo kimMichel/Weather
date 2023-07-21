@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import CoreLocation
 
 class WeatherViewModel {
     
     var service = WeatherManager()
     
-    func getWeather(completion: @escaping (WeatherModel) -> Void) {
+    func getWeather(lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (WeatherModel) -> Void) {
         
-        service.fetchData { weather, error in
+        service.fetchData(lat: lat, lon: lon) { weather, error in
             if let weather = weather {
                 completion(weather)
             }
