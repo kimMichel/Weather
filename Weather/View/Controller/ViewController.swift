@@ -37,18 +37,18 @@ class ViewController: UIViewController {
         tempLabel.textAlignment = .center
         tempLabel.textColor = .white
         tempLabel.text = "15°C"
-        tempLabel.font = UIFont.systemFont(ofSize: 44)
+        tempLabel.font = UIFont.boldSystemFont(ofSize: 44)
         view.addSubview(tempLabel)
         
         NSLayoutConstraint.activate([
             cityLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
-            cityLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cityLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             weatherImageView.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 30),
-            weatherImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            weatherImageView.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             weatherImageView.heightAnchor.constraint(equalToConstant: 75.5),
             weatherImageView.widthAnchor.constraint(equalToConstant: 80),
             tempLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor, constant: 20),
-            tempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            tempLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor)
         ])
     }
 
