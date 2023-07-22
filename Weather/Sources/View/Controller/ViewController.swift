@@ -10,6 +10,7 @@ import CoreLocation
 
 class ViewController: UIViewController {
     
+    var searchButton: UIButton!
     var cityLabel: UILabel!
     var weatherImageView: UIImageView!
     var tempLabel: UILabel!
@@ -21,6 +22,14 @@ class ViewController: UIViewController {
     override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBlue
+        
+        searchButton = UIButton(type: .system)
+        searchButton.translatesAutoresizingMaskIntoConstraints = false
+        searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        searchButton.tintColor = .white
+        searchButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+        view.addSubview(searchButton)
+        
         
         cityLabel = UILabel()
         cityLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +63,9 @@ class ViewController: UIViewController {
         view.addSubview(descriptionLabel)
         
         NSLayoutConstraint.activate([
-            cityLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
+            searchButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 10),
+            searchButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -10),
+            cityLabel.topAnchor.constraint(equalTo: searchButton.bottomAnchor, constant: 20),
             cityLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             weatherImageView.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 30),
             weatherImageView.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
@@ -79,6 +90,24 @@ class ViewController: UIViewController {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+    }
+    
+    @objc private func searchButtonTapped() {
+        let ac = UIAlertController(title: "Pesquisar", message: "Digite o nome da cidade", preferredStyle: .alert)
+        ac.addTextField { textField in
+            textField.placeholder = "Digite o nome da cidade"
+            textField.textAlignment = .center
+            textField.autocapitalizationType = .words
+            textField.keyboardType = .default
+        }
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        ac.addAction(UIAlertAction(title: "Ok", style: .default) {_ in
+            print("City was searched.")
+            guard let textField = ac.textFields?.first else { return }
+            let city = textField.text ?? ""
+            print(city)
+        })
+        present(ac, animated: true)
     }
 }
 
