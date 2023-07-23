@@ -17,6 +17,18 @@ class WeatherViewModel {
         service.fetchData(lat: lat, lon: lon) { weather, error in
             if let weather = weather {
                 completion(weather)
+            } else {
+                print(error ?? "Error: fetching data with current location.")
+            }
+        }
+    }
+    
+    func getWeather(cityName: String, completion: @escaping (WeatherModel) -> Void) {
+        service.fetchData(cityName: cityName) { weather, error in
+            if let weather = weather {
+                completion(weather)
+            } else {
+                print(error ?? "Error: fetching data with city name.")
             }
         }
     }

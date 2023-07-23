@@ -101,11 +101,18 @@ class ViewController: UIViewController {
             textField.keyboardType = .default
         }
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        ac.addAction(UIAlertAction(title: "Ok", style: .default) {_ in
+        ac.addAction(UIAlertAction(title: "Ok", style: .default) {[weak self] _ in
             print("City was searched.")
             guard let textField = ac.textFields?.first else { return }
             let city = textField.text ?? ""
-            print(city)
+            self?.viewModel.getWeather(cityName: city) { [weak self] weather in
+                DispatchQueue.main.async {
+                    self?.cityLabel.text = weather.cityName
+                    self?.tempLabel.text = weather.temperatureString
+                    self?.weatherImageView.image = UIImage(systemName: weather.conditionName)
+                    self?.descriptionLabel.text = weather.description.capitalized
+                }
+            }
         })
         present(ac, animated: true)
     }

@@ -12,12 +12,26 @@ class WeatherManager {
     
     let key = "ffd010af452f640e24a48b91419dd9fe"
     let unit = "metric"
-    let lang = "pt-br"
+    let lang = "pt_br"
     
     func fetchData(lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (WeatherModel?, String?) -> Void) {
         
         let urlString = "https://api.openweathermap.org/data/2.5/weather?appid=\(key)&units=\(unit)&lang=\(lang)&lat=\(lat)&lon=\(lon)"
         
+        performRequest(urlString: urlString) { weather, error in
+            completion(weather, error)
+        }
+    }
+    
+    func fetchData(cityName: String, completion: @escaping (WeatherModel?, String?) -> Void) {
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?appid=\(key)&units=\(unit)&lang=\(lang)&q=\(cityName)"
+        
+        performRequest(urlString: urlString) { weather, error in
+            completion(weather, error)
+        }
+    }
+    
+    func performRequest(urlString: String, completion: @escaping (WeatherModel?, String?) -> Void) {
         guard let url = URL(string: urlString) else { return }
         
         let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
@@ -36,11 +50,13 @@ class WeatherManager {
                 } catch {
                     completion(nil, error.localizedDescription)
                 }
-
+                
             } else {
                 completion(nil, error?.localizedDescription)
             }
         }
         task.resume()
+        
     }
 }
+
