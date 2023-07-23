@@ -43,8 +43,11 @@ class WeatherManager {
                     let temp = decodedData.main.temp
                     let name = decodedData.name
                     let description = decodedData.weather[0].description
+                    let minTemp = decodedData.main.temp_min
+                    let maxTemp = decodedData.main.temp_max
+                    let tempFeelsLike = decodedData.main.feels_like
                     
-                    let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp, description: description)
+                    let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp, description: description, minTemp: minTemp, maxTemp: maxTemp, feelsLike: tempFeelsLike)
                     
                     completion(weather, nil)
                 } catch {

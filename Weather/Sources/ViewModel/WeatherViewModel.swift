@@ -12,7 +12,11 @@ class WeatherViewModel {
     
     var service = WeatherManager()
     
+    var showLoading: (() -> Void)?
+    
     func getWeather(lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (WeatherModel) -> Void) {
+        
+        showLoading?()
         
         service.fetchData(lat: lat, lon: lon) { weather, error in
             if let weather = weather {

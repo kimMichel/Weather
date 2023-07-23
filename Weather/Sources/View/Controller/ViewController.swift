@@ -15,6 +15,12 @@ class ViewController: UIViewController {
     var weatherImageView: UIImageView!
     var tempLabel: UILabel!
     var descriptionLabel: UILabel!
+    var minTempLabel: UILabel!
+    var minTempValueLabel: UILabel!
+    var maxTempLabel: UILabel!
+    var maxTempValueLabel: UILabel!
+    var tempFeelsLike: UILabel!
+    var tempFeelsLikeValue: UILabel!
     
     var viewModel = WeatherViewModel()
     var locationManager = CLLocationManager()
@@ -62,6 +68,54 @@ class ViewController: UIViewController {
         descriptionLabel.font = UIFont.systemFont(ofSize: 24)
         view.addSubview(descriptionLabel)
         
+        minTempLabel = UILabel()
+        minTempLabel.translatesAutoresizingMaskIntoConstraints = false
+        minTempLabel.font = UIFont.systemFont(ofSize: 24)
+        minTempLabel.textAlignment = .left
+        minTempLabel.textColor = .white
+        minTempLabel.text = "Temperatura min:"
+        view.addSubview(minTempLabel)
+        
+        minTempValueLabel = UILabel()
+        minTempValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        minTempValueLabel.font = UIFont.systemFont(ofSize: 24)
+        minTempValueLabel.textAlignment = .right
+        minTempValueLabel.textColor = .white
+        minTempValueLabel.text = "---"
+        view.addSubview(minTempValueLabel)
+        
+        maxTempLabel = UILabel()
+        maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
+        maxTempLabel.font = UIFont.systemFont(ofSize: 24)
+        maxTempLabel.textAlignment = .left
+        maxTempLabel.textColor = .white
+        maxTempLabel.text = "Temperatura max:"
+        view.addSubview(maxTempLabel)
+        
+        maxTempValueLabel = UILabel()
+        maxTempValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        maxTempValueLabel.font = UIFont.systemFont(ofSize: 24)
+        maxTempValueLabel.textAlignment = .right
+        maxTempValueLabel.textColor = .white
+        maxTempValueLabel.text = "---"
+        view.addSubview(maxTempValueLabel)
+        
+        tempFeelsLike = UILabel()
+        tempFeelsLike.translatesAutoresizingMaskIntoConstraints = false
+        tempFeelsLike.font = UIFont.systemFont(ofSize: 24)
+        tempFeelsLike.textAlignment = .left
+        tempFeelsLike.textColor = .white
+        tempFeelsLike.text = "Sensação térmica:"
+        view.addSubview(tempFeelsLike)
+        
+        tempFeelsLikeValue = UILabel()
+        tempFeelsLikeValue.translatesAutoresizingMaskIntoConstraints = false
+        tempFeelsLikeValue.font = UIFont.systemFont(ofSize: 24)
+        tempFeelsLikeValue.textAlignment = .right
+        tempFeelsLikeValue.textColor = .white
+        tempFeelsLikeValue.text = "---"
+        view.addSubview(tempFeelsLikeValue)
+        
         NSLayoutConstraint.activate([
             searchButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 10),
             searchButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -10),
@@ -76,7 +130,25 @@ class ViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor, constant: 20),
             descriptionLabel.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             descriptionLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20)
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20),
+            minTempLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 25),
+            minTempLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
+            minTempLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.7),
+            minTempValueLabel.centerYAnchor.constraint(equalTo: minTempLabel.centerYAnchor),
+            minTempValueLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20),
+            minTempValueLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.3),
+            maxTempLabel.topAnchor.constraint(equalTo: minTempLabel.bottomAnchor, constant: 20),
+            maxTempLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
+            maxTempLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.7),
+            maxTempValueLabel.centerYAnchor.constraint(equalTo: maxTempLabel.centerYAnchor),
+            maxTempValueLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20),
+            maxTempValueLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.3),
+            tempFeelsLike.topAnchor.constraint(equalTo: maxTempLabel.bottomAnchor, constant: 20),
+            tempFeelsLike.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20),
+            tempFeelsLike.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.7),
+            tempFeelsLikeValue.centerYAnchor.constraint(equalTo: tempFeelsLike.centerYAnchor),
+            tempFeelsLikeValue.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20),
+            tempFeelsLikeValue.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.3)
         ])
     }
 
@@ -84,6 +156,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
+        setupBind()
     }
     
     private func configure() {
@@ -106,15 +179,34 @@ class ViewController: UIViewController {
             guard let textField = ac.textFields?.first else { return }
             let city = textField.text ?? ""
             self?.viewModel.getWeather(cityName: city) { [weak self] weather in
-                DispatchQueue.main.async {
-                    self?.cityLabel.text = weather.cityName
-                    self?.tempLabel.text = weather.temperatureString
-                    self?.weatherImageView.image = UIImage(systemName: weather.conditionName)
-                    self?.descriptionLabel.text = weather.description.capitalized
-                }
+                self?.loadView(weather)
             }
         })
         present(ac, animated: true)
+    }
+    
+    func loadView(_ weather: WeatherModel) {
+        DispatchQueue.main.async {
+            self.cityLabel.text = weather.cityName
+            self.tempLabel.text = weather.temperatureString
+            self.weatherImageView.image = UIImage(systemName: weather.conditionName)
+            self.descriptionLabel.text = weather.description.capitalized
+            self.minTempValueLabel.text = weather.minTempString
+            self.maxTempValueLabel.text = weather.maxTempString
+            self.tempFeelsLikeValue.text = weather.tempFeelsLikeString
+        }
+    }
+    
+    func setupBind() {
+        viewModel.showLoading = { [weak self] in
+            self?.cityLabel.text = "----"
+            self?.tempLabel.text = "---"
+            self?.weatherImageView.image = UIImage(systemName: "cloud.fill")
+            self?.descriptionLabel.text = "-----"
+            self?.minTempValueLabel.text = "---"
+            self?.maxTempValueLabel.text = "---"
+            self?.tempFeelsLikeValue.text = "---"
+        }
     }
 }
 
@@ -126,12 +218,7 @@ extension ViewController: CLLocationManagerDelegate {
             let longitude = location.coordinate.longitude
             
             viewModel.getWeather(lat: latitude, lon: longitude) { [weak self] weather in
-                DispatchQueue.main.async {
-                    self?.cityLabel.text = weather.cityName
-                    self?.tempLabel.text = weather.temperatureString
-                    self?.weatherImageView.image = UIImage(systemName: weather.conditionName)
-                    self?.descriptionLabel.text = weather.description.capitalized
-                }
+                self?.loadView(weather)
             }
         }
     }

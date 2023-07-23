@@ -12,9 +12,24 @@ struct WeatherModel {
     let cityName: String
     let temperature: Double
     let description: String
+    let minTemp: Double
+    let maxTemp: Double
+    let feelsLike: Double
     
     var temperatureString: String {
         return String(format: "%.1f°C", temperature)
+    }
+    
+    var minTempString: String {
+        return String(format: "%.1f°C", minTemp)
+    }
+    
+    var maxTempString: String {
+        return String(format: "%.1f°C", maxTemp)
+    }
+    
+    var tempFeelsLikeString: String {
+        return String(format: "%.1f°C", feelsLike)
     }
     
     var conditionName: String {
