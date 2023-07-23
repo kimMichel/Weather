@@ -156,7 +156,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
-        setupBind()
     }
     
     private func configure() {
@@ -194,18 +193,6 @@ class ViewController: UIViewController {
             self.minTempValueLabel.text = weather.minTempString
             self.maxTempValueLabel.text = weather.maxTempString
             self.tempFeelsLikeValue.text = weather.tempFeelsLikeString
-        }
-    }
-    
-    func setupBind() {
-        viewModel.showLoading = { [weak self] in
-            self?.cityLabel.text = "----"
-            self?.tempLabel.text = "---"
-            self?.weatherImageView.image = UIImage(systemName: "cloud.fill")
-            self?.descriptionLabel.text = "-----"
-            self?.minTempValueLabel.text = "---"
-            self?.maxTempValueLabel.text = "---"
-            self?.tempFeelsLikeValue.text = "---"
         }
     }
 }
